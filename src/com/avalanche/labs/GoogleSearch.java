@@ -32,7 +32,6 @@ public class GoogleSearch {
 
 		System.out.println("Page title is: " + driver.getTitle());
 
-		// Close the browser
 		driver.quit();
 
 	}
