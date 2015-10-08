@@ -2,18 +2,24 @@ package com.avalanche.labs;
 
 import java.io.File;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 public class FacebookLogin {
+	
 	public static WebDriver driver;
+	
+	WebElement uName;
+	WebElement pWord;
+	WebElement login;
 
 	@BeforeClass
 	public static void startDriver() {
@@ -23,6 +29,7 @@ public class FacebookLogin {
 		FirefoxProfile firefoxPro = new FirefoxProfile(); 
 		
 		driver = new FirefoxDriver(Binary,firefoxPro);
+
 	}
 	
 	@AfterClass
@@ -31,14 +38,15 @@ public class FacebookLogin {
 	}
 	
 
-	@Test
+	@Test(priority=3)
 	public void driverLevelPageInterrogationMethod() {
 
 		final String theTestPageURL = "file:///C:/AutomationWorkspace/WebDriverAutomation/Apps/AvaTech.html";
-	
+
 		driver.navigate().to(theTestPageURL);
 
-		Assert.assertEquals(driver.getTitle(), "Avalanche Information Technology, Inc.");
+		Assert.assertEquals(driver.getTitle(),
+				"Avalanche Information Technology, Inc.");
 		Assert.assertEquals(driver.getCurrentUrl(), theTestPageURL);
 
 		String pageSource = driver.getPageSource();
@@ -46,14 +54,12 @@ public class FacebookLogin {
 
 	}
 	
-	@Test
-	public void faceBookErrorPageValidation() {
+	@Test(priority=0)
+	public void verifyFaceBookErrorPage() {
 		
 		String faceBook = "http://www.facebook.com";
 
 		driver.get(faceBook);
-		
-		//String tagName = null;		
 		
 		System.out.println("Tag name for Email id: " + driver.findElement(By.id("email")).getTagName()); 
 		System.out.println("Attribute Value for Type: " + driver.findElement(By.id("email")).getAttribute("type"));
@@ -70,7 +76,7 @@ public class FacebookLogin {
 		String expectedResult = "Please re-enter your password";
 		String actualResult = driver.findElement(By.xpath(".//*[@id='login_form']/div[1]/div[1]") ).getText();
 		
-		Assert.assertEquals("Test Result:", expectedResult, actualResult);
+		Assert.assertEquals(expectedResult, actualResult);
 		
 		
 		try {
@@ -79,5 +85,39 @@ public class FacebookLogin {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test(priority=1)
+	public void verifyFaceBookErrorPageUsingWebElementInterrogation() throws InterruptedException {
+		
+		String faceBook = "http://www.facebook.com";
+		driver.get(faceBook);
+
+		getLoginInfo("email","pass","u_0_x");
+		
+		uName.sendKeys("alamkawser@yahoo.com");
+		pWord.sendKeys("ghgh");
+		login.click();
+		
+		Thread.sleep(5000);
+		
+		String expectedResult = "Please re-enter your password";
+		String actualResult = driver.findElement(By.cssSelector("#login_form .pam .fsl")).getText();		
+		
+		Assert.assertEquals(expectedResult, actualResult);
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getLoginInfo(String username, String password, String submit){
+		uName = driver.findElement(By.id(username));
+		pWord = driver.findElement(By.id(password));
+		login = driver.findElement(By.id(submit));
+		
+	}
+	
 
 }
