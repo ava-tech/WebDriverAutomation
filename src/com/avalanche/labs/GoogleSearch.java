@@ -30,7 +30,7 @@ public class GoogleSearch {
 			}
 		});
 
-		System.out.println("Page title is: " + driver.getTitle());
+		System.out.println("Page title is: " + driver.getTitle() );
 
 		driver.quit();
 
